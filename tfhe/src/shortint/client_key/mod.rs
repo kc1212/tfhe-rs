@@ -29,6 +29,14 @@ pub struct ClientKey {
 }
 
 impl ClientKey {
+    pub fn get_lwe_sk_ref(&self) -> &LweSecretKeyOwned<u64> {
+        &self.large_lwe_secret_key
+    }
+
+    pub fn get_glwe_sk_ref(&self) -> &GlweSecretKeyOwned<u64> {
+        &self.glwe_secret_key
+    }
+
     /// Generate a client key.
     ///
     /// # Example
