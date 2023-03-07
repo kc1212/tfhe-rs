@@ -159,6 +159,28 @@ impl ShortintEngine {
         })
     }
 
+    pub fn unchecked_glwe_encrypt(
+        &mut self,
+        client_key: &ClientKey,
+        message: &PlaintextListOwned<u64>,
+    ) -> EngineResult<GlweCiphertextOwned<u64>> {
+        let param = client_key.parameters;
+        // let plaintext_list = PlaintextList::from_container({
+        //     let mut tmp = vec![0u64, param.polynomial_size.0];
+        //     tmp[0] = message;
+        //     tmp
+        // });
+        let mut glwe = GlweCiphertext::new(0u64, param.glwe_dimension.to_glwe_size(), param.polynomial_size);
+        encrypt_glwe_ciphertext(
+            &client_key.glwe_secret_key,
+            &mut glwe,
+            message,
+            param.glwe_modular_std_dev,
+            &mut self.encryption_generator,
+        );
+        Ok(glwe)
+    }
+
     pub(crate) fn decrypt_message_and_carry(
         &mut self,
         client_key: &ClientKey,
